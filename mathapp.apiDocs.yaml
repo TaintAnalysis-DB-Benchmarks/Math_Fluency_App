@@ -1,0 +1,954 @@
+openapi: '3.0.0'
+info:
+  version: "0.1.0"
+  title: 'MathApp.API'
+  description: 'This is the backend API for the ASU STEM Academy Math APP Project'
+servers:
+  - url: /api/v1
+paths:
+  /students:
+    get:
+      summary: Returns a list of students
+      #operationID: students.getAll
+      responses:
+        '200':
+          description: Student List
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  students:
+                    description: Student array
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/student'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+    post:
+      summary: Creates a new student record
+      #operationID: students.addStudent
+      requestBody:
+        description: Student to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newStudent'
+      responses:
+        '201':
+          $ref: '#/components/responses/201Created'
+        '400':
+          $ref: '#/components/responses/400Error'
+  /students/{studentId}:
+    get:
+      summary: Get student by student ID number
+      #operationID: students.getStudent
+      parameters:
+        - name: studentId
+          description: Student ID to lookkup
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Student Record
+          content:
+            application/json:
+              schema:
+                properties:
+                  student:
+                    type: object
+                    $ref: '#/components/schemas/student'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+    patch:
+      summary: Update student details
+      #operationID:
+      parameters:
+        - name: studentId
+          description: Student ID to update
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateStudent'
+      responses:
+        '204':
+          description: Accepted
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Record Locator
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+  /students/{studentId}/tests:
+    get:
+      summary: Get active tests for a student
+      #operationID: students.listTests
+      parameters:
+        - name: studentId
+          description: Student ID to lookup
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Tests available to student identified by studentId
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tests:
+                    description: Test array
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/test'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+    post:
+      summary: Assign a test to a student
+      #operationID: students.add_test
+      parameters:
+        - name: studentId
+          description: Student ID to add test to
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      requestBody:
+        description: Test to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newTestAssignment'
+      responses:
+        '201':
+          $ref: '#/components/responses/201Created'
+        '400':
+          $ref: '#/components/responses/400Error'
+  /teachers:
+    get:
+      summary: Returns a list of teachers
+      #operationID: teachers.get_all
+      responses:
+        '200':
+          description: Teacher List
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  teachers:
+                    description: Array of Teacher Records
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/teacher'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+    post:
+      summary: Creates a new Teacher record
+      #operationID: teachers.add_teacher
+      requestBody:
+        description: Teacher to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newTeacher'
+      responses:
+        '201':
+          $ref: '#/components/responses/201Created'
+        '400':
+          $ref: '#/components/responses/400Error'
+  /teachers/{teacherId}:
+    get:
+      summary: Get teacher by teacher ID number
+      #operationID: teachers.get_teacher
+      parameters:
+        - name: teacherId
+          description: Teacher ID to lookup
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Teacher Record
+          content:
+            application/json:
+              schema:
+                properties:
+                  teacher:
+                    type: object
+                    $ref: '#/components/schemas/teacher'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+  /teachers/{teacherId}/class:
+    get:
+      summary: Get students assigned to teacher
+      #operationID: teachers.get_class
+      parameters:
+        - name: teacherId
+          description: Teacher ID to lookup
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Student Records
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  students:
+                    description: Teacher's class student array
+                    type: array
+                    items: 
+                      $ref: '#/components/schemas/student'
+        '400':
+          $ref: '#/components/responses/400Error'
+  /tests:
+    get:
+      summary: Returns a list of tests
+      #operationID: testss.get_all
+      responses:
+        '200':
+          description: Test List
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  teachers:
+                    description: Array of Test Records
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/test'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+    post:
+      summary: Creates a new Test record
+      #operationID: test.add_test
+      requestBody:
+        description: Test to add
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newTest'
+      responses:
+        '201':
+          $ref: '#/components/responses/201Created'
+        '400':
+          $ref: '#/components/responses/400Error'
+  /tests/{testId}:
+    get:
+      summary: Get details for a specific test
+      #operationID: tests.get_test
+      parameters:
+        - name: testId
+          description: Record Identifier for a specific test
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Test Record
+          content:
+            application/json:
+              schema:
+                properties:
+                  test:
+                    type: object
+                    $ref: '#/components/schemas/test'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+    patch:
+      summary: Update test details
+      #operationID: tests.modify_test
+      parameters:
+        - name: testId
+          description: Record Identifier for test to be updated
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/updateTest'
+      responses:
+        '204':
+          description: Accepted
+          headers:
+            Location:
+              schema:
+                type: string
+              description: Record Locator
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+  /results:
+    get:
+      summary: Get all results for all tests
+      #operationID: results.get_all
+      responses:
+        '200':
+          description: All results
+          content:
+            application/json:
+              schema:
+                properties:
+                  results:
+                    description: Array of test results
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/result'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+    post:
+      summary: Submit test results
+      #operationID: results.add_result
+      requestBody:
+        description: Submitted test results
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/newResult'
+      responses:
+        '201':
+          $ref: '#/components/responses/201Created'
+        '400':
+          $ref: '#/components/responses/400Error'
+  /results/{resultId}:
+    get:
+      summary: Get result by result tracking ID
+      #operationID: results.get_by_resultId
+      parameters:
+        - name: resultId
+          description: Result tracking ID number to look up
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Aggregate Results
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: object
+                    $ref: '#/components/schemas/result'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+  /results/{resultId}/summary:
+    get:
+      summary: Get result summary by result tracking ID
+      #operationID: results.get_summary_by_resultId
+      parameters:
+        - name: resultId
+          description: Result tracking ID number to look up
+          in: path
+          schema:
+            type: integer
+          required: true
+      responses:
+        '200':
+          description: Aggregate Results summary
+          content:
+            application/json:
+              schema:
+                properties:
+                  result:
+                    type: object
+                    $ref: '#/components/schemas/resultSummary'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+  /results/student/{studentId}:
+    get:
+      summary: Get results for all tests by the specified student
+      #operationID: results.get_by_student
+      parameters:
+        - name: studentId
+          description: Student ID to lookup
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Aggregate Results
+          content:
+            application/json:
+              schema:
+                properties:
+                  results:
+                    description: Student's results
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/result'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+  /results/student/{studentId}/summary:
+    get:
+      summary: Get summary results for specified student
+      #operationID: results.get_summary_by_student
+      parameters:
+        - name: studentId
+          description: Student ID to lookup
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Aggregate Results
+          content:
+            application/json:
+              schema:
+                properties:
+                  results:
+                    description: Student result summary
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/resultSummary'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+  /results/teacher/{teacherId}:
+    get:
+      summary: Get results for all tests by the specified teacher
+      #operationID: results.get_by_teacher
+      parameters:
+        - name: teacherId
+          description: Teacher ID to lookup
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Aggregate Results
+          content:
+            application/json:
+              schema:
+                properties:
+                  results:
+                    description: Results for all of Teacher's students
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/result'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+  /results/teacher/{teacherId}/summary:
+    get:
+      summary: Get summary results for specified teacher
+      #operationID: results.get_summary_by_teacher
+      parameters:
+        - name: teacherId
+          description: Teacher ID to lookup
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Aggregate Results
+          content:
+            application/json:
+              schema:
+                properties:
+                  results:
+                    description: Aggregate summary results
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/resultSummary'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+  /results/test/{testId}:
+    get:
+      summary: Get results for a specific test by the test ID
+      #operationID: results.get_by_testId
+      parameters:
+        - name: testId
+          description: Test tracking ID number to look up the results for
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Aggregate Results
+          content:
+            application/json:
+              schema:
+                properties:
+                  results:
+                    description: Results for a specific test
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/result'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+  /results/test/{testId}/summary:
+    get:
+      summary: Get summary results for a specific test by the test ID
+      #operationID: results.get_summary_by_testId
+      parameters:
+        - name: testId
+          description: Test tracking ID number to look up the results for
+          in: path
+          schema:
+            type: integer
+            minimum: 1
+          required: true
+      responses:
+        '200':
+          description: Aggregate results
+          content:
+            application/json:
+              schema:
+                properties:
+                  results:
+                    description: Summary results for a test
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/resultSummary'
+        '400':
+          $ref: '#/components/responses/400Error'
+        '404':
+          $ref: '#/components/responses/404Error'
+# Reusable Definitions     
+components:
+  schemas:
+    student:
+      description: Student record
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Student ID
+        firstName:
+          type: string
+          description: Student's First Name
+        lastName:
+          type: string
+          description: Student's Last Name
+        stars:
+          type: integer
+          description: Stars student has earned
+        level:
+          type: string
+          pattern: '\d{1,2}[\+\-\/\*]'
+          description: Level of student
+        teacherId:
+          type: string
+          description: Student's Teacher
+      endpoint:
+        type: string
+        description: Endpoint request was sent to
+      responseCode:
+        type: integer
+        description: HTTP error code
+      response:
+        type: string
+        description: Descriptor for response code
+    teacher:
+      description: Teacher record
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID number for teacher
+        firstName:
+          type: string
+          description: Teacher's First Name
+        lastName:
+          type: string
+          description: Teacher's Last Name
+      endpoint:
+        type: string
+        description: Endpoint request was sent to
+      responseCode:
+        type: integer
+        description: HTTP error code
+      response:
+        type: string
+        description: Descriptor for response code
+    test:
+      description: Test record
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID number for test
+        practice:
+          type: boolean
+          description: practice (true), asessment (false)
+        level:
+          type: string
+          pattern: '\d{1,2}[\+\-\/\*]'
+          description: Level of the test
+        attemptsRemaining:
+          type: integer
+          description: Number of times available, -1 for always available
+        studentId:
+          type: integer
+          description: Student taking the test
+        teacherId:
+          type: integer
+          description: Teacher assigning the test
+    result:
+      description: Result record
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Tracking number for test attempt submission
+        timeTaken:
+          type: string
+          description: Time taken for the individual test attempt ("HH:MM:SS")
+        testId:
+          type: integer
+          description: Test ID of test this submission is for
+        answers:
+          description: Array of submitted answers
+          type: array
+          items:
+            properties:
+              studentAnswer:
+                type: integer
+                description: Answer student submitted 
+              correctlyAnswered:
+                type: boolean
+                description: Whether the student's answer was correct
+              operation:
+                type: string
+                description: Operator for the test either +, -, *, /
+                pattern: '[\+\-\/\*]'
+              operand1:
+                type: integer
+                description: Operand preceding the operation
+              operand2:
+                type: integer
+                description: Operand subequent to operation
+    resultSummary:
+      description: Summary of results
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Tracking number for test attempt submission
+        timeTaken:
+          type: string
+          description: Time taken for the individual test attempt ("HH:MM:SS")
+        testId:
+          type: integer
+          description: Test ID of test this submission is for
+        totalQuestions:
+          type: integer
+          description: Number of questions in the test attempt
+        correctlyAnswered:
+          type: integer
+          description: Number of questions the student answered correctly
+    newStudent:
+      description: New Student
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: Student's First Name
+        lastName:
+          type: string
+          description: Student's Last Name
+        baseNumber:
+          type: integer
+          description: Base number of the student's level
+          min: 0 or environment variable
+          max: 12 or environment variable
+        operation:
+          type: string
+          description: Operation for the test either +, -, *, /
+          pattern: '[\+\-\/\*]'
+        teacherId:
+          type: integer
+          description: ID for Student's Teacher
+      required:
+        - firstName
+        - lastName
+        - teacherId
+    newTeacher:
+      description: New Teacher
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: Teacher's First Name
+        lastName:
+          type: string
+          description: Teacher's Last Name
+      required:
+        - firstName
+        - lastName
+    newTest:
+      description: Create a new test for students to take
+      type: object
+      properties:
+        practice:
+          type: boolean
+          description: practice (true), assessment (false)
+          default: true
+        baseNumber:
+          type: integer
+          description: Base number of the test
+          min: 0 or environment variable
+          max: 12 or environment variable
+        operation:
+          type: string
+          description: Operation for the test either +, -, *, /
+          pattern: '[\+\-\/\*]'
+        attemptsAllowed:
+          type: integer
+          description: Number of times available, -1 for always available
+          default: -1
+        studentId:
+          type: integer
+          description: Student taking the test
+        teacherId:
+          type: integer
+          description: Teacher assigning the test
+      required:
+        - studentId
+        - teacherId
+        - baseNumber
+        - operation
+    newTestAssignment:
+      description: Create a new test for students to take
+      type: object
+      properties:
+        practice:
+          type: boolean
+          description: practice (true), assessment (false)
+          default: true
+        baseNumber:
+          type: integer
+          description: Base number of the test
+          min: 0 or environment variable
+          max: 12 or environment variable
+        operation:
+          type: string
+          description: Operation for the test either +, -, *, /
+          pattern: '[\+\-\/\*]'
+        attemptsAllowed:
+          type: integer
+          description: Number of times available, -1 for always available
+          default: -1
+      required:
+        - baseNumber
+        - operation
+    newResult:
+      description: Create a new result record
+      type: object
+      properties:
+        timeTaken:
+          type: string
+          description: Time taken for the individual test attempt ("HH:MM:SS")
+          pattern: '^\d{2}:\d{2}:\d{2}$'
+          default: Max time allowed ("838:59:59" or environment variable)
+        testId:
+          type: integer
+          description: Test ID of the test the result belongs to
+        answers:
+          type: array
+          description: Answer Array
+          items:
+            properties:
+              studentAnswer:
+                type: integer
+                description: Answer the student submitted
+              operation:
+                type: string
+                description: Operation for the test either +, -, *, /
+                pattern: '[\+\-\/\*]'
+              operand1:
+                type: integer
+                description: Operand preceding the operation
+                min: 0 or environment variable
+                max: 14 or environment variable
+              operand2:
+                type: integer
+                description: Operand subsequent to operation
+                min: 0 or environment variable
+                max: 14 or environment variable
+            required:
+              - operation
+              - operand1
+              - operand2
+      required:
+        - testId
+    updateStudent:
+      description: Update student details
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: Student's first name
+        lastName:
+          type: string
+          description: Student's last name
+        stars:
+          type: integer
+          description: Student's accolade count
+        baseNumber:
+          type: integer
+          description: Operand for student level (i.e. 3 for 3+)
+          min: 0 or environment variable
+          max: 12 or environment variable
+        operation:
+          type: string
+          description: Operation for student level (i.e. '+' for 3+) either +,-,*,/
+          pattern: '[\+\-\/\*]'
+      endpoint:
+        type: string
+        description: Endpoint request was sent to
+      responseCode:
+        type: integer
+        description: HTTP error code
+      response:
+        type: string
+        description: Descriptor for response code
+    updateTest:
+      description: Update test details
+      type: object
+      properties:
+        attemptsRemaining:
+          type: integer
+          description: Number of tries remaining
+      required:
+        - attemptsRemaining
+    error:
+      description: An error was encountered
+      type: object
+      properties:
+        message:
+          type: string
+          description: Error Message from server
+        endpoint:
+          type: string
+          description: Endpoint request was sent to
+        responseCode:
+          type: integer
+          description: HTTP error code
+        response:
+          type: string
+          description: Descriptor for response code
+    success:
+      description: Operation successful
+      type: object
+      properties:
+        resource:
+          type: object
+          description: Success Message
+          properties:
+            id:
+              type: integer
+              description: id of created resource
+            uri:
+              type: string
+              description: location of created resource
+        endpoint:
+          type: string
+          description: Endpoint request was sent to
+        responseCode:
+          type: integer
+          description: HTTP error code
+        response:
+          type: string
+          description: Descriptor for response code
+  responses:
+    201Created:
+      description: Successfully created new Record
+      headers:
+        Location:
+          schema:
+            type: string
+            description: Record Locator
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/success'
+    400Error:
+      description: Invalid Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'
+    404Error:
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/error'

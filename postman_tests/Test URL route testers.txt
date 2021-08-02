@@ -1,0 +1,39 @@
+Test url test routes 
+
+//Add(post) a test
+http://localhost:8000/tests/
+
+json body
+{
+	"practice": true,
+	"baseNumber": 4,
+	"operation":"-",
+	"attemptsAllowed": 3,
+	"teacherId" : 3,
+	"studentId" : 2
+}
+
+
+// get all tests
+http://localhost:8000/tests/
+
+//get test by individual id
+http://localhost:8000/tests/1
+
+//get test by isPractice
+http://localhost:8000/tests/practice/true
+
+//get test by attempts remaining 
+http://localhost:8000/tests/attemptsRemaining/3
+
+//get test by teacher id
+http://localhost:8000/tests/teachers/1
+
+//get test by student id
+http://localhost:8000/tests/students/2
+
+//get test by base number
+http://localhost:8000/tests/baseNumber/3
+
+//patch test by id
+localhost:8000/tests/1

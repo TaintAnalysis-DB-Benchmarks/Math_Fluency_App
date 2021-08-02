@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: 'mathapp'
+      MYSQL_USER: 'mathapp_api'
+      MYSQL_PASSWORD: 'password_mathapp_api'
+      MYSQL_ROOT_PASSWORD: admin_password
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes: 
+      # Windows compatible volume for linux adjust appropriately
+      - ./db:/var/lib/mysql
+  node:
+    image: node:latest
+    user: 'node'
+    working_dir: /home/node/app
+    environment:
+      - NODE_ENV=development
+      - PORT=8000
+      - RDS_HOSTNAME=db
+      - RDS_DB_NAME=mathapp
+      - RDS_USERNAME=mathapp_api
+      - RDS_PASSWORD=password_mathapp_api
+      - RDS_PORT=3306
+      - APP_ENVIRONMENT=live
+      - APP_MIN_OPERAND=0
+      - APP_MAX_OPERAND=14
+      - APP_MAX_ATTEMPT_TIME=00:15:00
+      - DB_DIALECT=mysql
+    volumes: 
+      - ./backend:/home/node/app
+    ports: 
+      - '8000:8000'
+    expose:
+      - '8000'
+    # Using yarn to avoid a bad NPM issue of failure to launch
+    command: >
+      bash -c "yarn install && yarn run start"

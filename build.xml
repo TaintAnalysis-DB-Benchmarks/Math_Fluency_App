@@ -1,0 +1,84 @@
+<project name="MathApp" basedir=".">
+    <description>
+        Build file for the MathApp backend.
+    </description>
+    <property name="aws" location="aws"/>
+    <property name="stage" location="prestage"/>
+    <property name="docker_deploy" location="backend"/>
+
+    <target name="init" depends="clean">
+        <tstamp />
+    </target>
+
+    <target name="clean" depends="docker.stop">
+        <delete dir="${aws}" />
+        <delete dir="${stage}" />
+    </target>
+
+    <target name="stage_files" depends="init" description="Assemble files for use.">
+        <copy todir="${stage}">
+            <fileset dir=".">
+                <include name="*.js" />
+            </fileset>
+        </copy>
+        <copy todir="${stage}/routes">
+            <fileset dir="routes" />
+        </copy>
+        <copy todir="${stage}/models">
+            <fileset dir="models" />
+        </copy>
+        <copy file="package.json" todir="${stage}">
+            <filterchain>
+                <linecontains negate="true">
+                    <contains value="sqlite3" />
+                </linecontains>
+            </filterchain>
+        </copy>
+        <copy file="package-lock.json" todir="${stage}" failonerror="false" />
+        <copy file="mathapp.apiDocs.yaml" todir="${stage}" />
+        <copy file="yarn.lock" todir="${stage}" />
+    </target>
+
+    <target name="aws" depends="stage_files" 
+            description="Assemble AWS Elastic Beanstalk package." >
+        <mkdir dir="${stage}"/>
+        <mkdir dir="${aws}" />
+        <!--
+        <copy file="app.js" todir="${stage}/"/>
+        <copy file="database.js" todir="${stage}/"/>
+        -->
+   
+        <zip destfile="${aws}/mathapp.zip" basedir="${stage}" />
+        <delete dir="${stage}" />
+    </target>
+
+    <target name="docker.start" depends="docker.run" />
+    <target name="docker.up" depends="docker.run" />
+    <target name="docker.run" depends="docker.stop">
+        <antcall target="stage_files" />
+        <mkdir dir="${docker_deploy}" />
+        <copy todir="${docker_deploy}">
+            <fileset dir="${stage}" />
+        </copy>
+        <delete includeEmptyDirs="true" quiet="true" >
+            <fileset dir="${stage}" />
+        </delete>
+        <exec executable="docker-compose" dir="./">
+            <arg value="--no-ansi" />
+            <arg value="up" />
+            <arg value="--build" />
+            <arg value="--force-recreate" />
+            <arg value="--no-deps" />
+
+        </exec>
+    </target>
+    <target name="docker.stop">
+        <exec executable="docker-compose" dir="./">
+            <arg value="--no-ansi" />
+            <arg value="down" />
+        </exec>
+        <delete dir="${docker_deploy}" />
+    </target>
+    <target name="docker.down" depends="docker.stop" />
+</project>
+

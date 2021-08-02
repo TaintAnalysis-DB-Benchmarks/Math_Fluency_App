@@ -1,0 +1,457 @@
+{
+	"info": {
+		"_postman_id": "d2ab67ab-f877-4212-a9f4-866eb0b72a02",
+		"name": "SER402 Demo",
+		"description": "Unit testing for SER402 Semester",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Load Teacher",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b37b5efe-a028-498a-a980-cb3a5a679a19",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"})",
+							"var jsonData = JSON.parse(responseBody)",
+							"pm.test(\"Got a URI reference\", function() {",
+							"    pm.collectionVariables.set(\"teacherURI\", jsonData.resource.uri);    ",
+							"});",
+							"pm.test(\"Got an ID reference\", function() {",
+							"    pm.collectionVariables.set(\"teacherID\", jsonData.resource.id);    ",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"firstName\": \"test\",\n    \"lastName\": \"teacher\"\n}",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/v1/teachers",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"teachers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get teacher by ID (from Load)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1da5ce2c-8b81-49b0-9ca3-03a729702efb",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"var jsonData = JSON.parse(responseBody)",
+							"pm.test(\"Correct teacher referenced\", function (){",
+							"    pm.expect(jsonData.teacher.firstName === \"test\");",
+							"    pm.expect(jsonData.teacher.lastName === \"teacher\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{teacherURI}}",
+					"host": [
+						"{{teacherURI}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add student to teacher with Teacher ID from earlier",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1a584e3b-b20c-4414-bcd0-656c779d97d1",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"})",
+							"var jsonData = JSON.parse(responseBody)",
+							"pm.test(\"Got a URI reference\", function() {",
+							"    pm.collectionVariables.set(\"studentURI\", jsonData.resource.uri);    ",
+							"});",
+							"pm.test(\"Got an ID reference\", function() {",
+							"    pm.collectionVariables.set(\"studentID\", jsonData.resource.id);    ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"firstName\": \"testing\",\n\t\"lastName\": \"student\",\n\t\"baseNumber\": 5,\n\t\"operation\": \"+\",\n\t\"teacherId\": {{teacherID}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/students",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"students"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get student by ID (from Load)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b2babb04-da47-4cee-9646-ba3e67692ade",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"var jsonData = JSON.parse(responseBody)",
+							"pm.test(\"Correct student referenced\", function (){",
+							"    pm.expect(jsonData.student.firstName === \"testing\");",
+							"    pm.expect(jsonData.student.lastName === \"student\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{studentURI}}",
+					"host": [
+						"{{studentURI}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Test",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bdf3565d-803b-44a4-9762-03262d3b9d9c",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"})",
+							"var jsonData = JSON.parse(responseBody)",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"})",
+							"var jsonData = JSON.parse(responseBody)",
+							"pm.test(\"Got a URI reference\", function() {",
+							"    pm.collectionVariables.set(\"testURI\", jsonData.resource.uri);    ",
+							"});",
+							"pm.test(\"Got an ID reference\", function() {",
+							"    pm.collectionVariables.set(\"testID\", jsonData.resource.id);    ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"practice\": true,\n\t\"baseNumber\": 5,\n\t\"operation\": \"-\",\n\t\"attemptsAllowed\": 4,\n\t\"studentId\": {{studentID}},\n\t\"teacherId\": {{teacherID}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/v1/tests",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"tests"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get test by ID (from Load)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "88615f31-c75d-4e00-8ff0-070da9ca1427",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"var jsonData = JSON.parse(responseBody)",
+							"pm.test(\"Correct test level referenced\", function (){",
+							"    pm.expect(jsonData.test.level === \"5-\");",
+							"    pm.expect(jsonData.test.practice === true);",
+							"});",
+							"",
+							"pm.test(\"Correct Student referenced:\", function() {",
+							"    pm.expect(jsonData.test.studentId === pm.collectionVariables.get(\"studentID\"));",
+							"})",
+							"",
+							"pm.test(\"Correct Teacher referenced:\", function() {",
+							"    pm.expect(jsonData.test.teacherId === pm.collectionVariables.get(\"teacherID\"));",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{testURI}}",
+					"host": [
+						"{{testURI}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Submit test results",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6c835591-5ddd-4f7e-a635-587b786022d4",
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"})",
+							"var jsonData = JSON.parse(responseBody)",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"})",
+							"var jsonData = JSON.parse(responseBody)",
+							"pm.test(\"Got a URI reference\", function() {",
+							"    pm.collectionVariables.set(\"resultURI\", jsonData.resource.uri);    ",
+							"});",
+							"pm.test(\"Got an ID reference\", function() {",
+							"    pm.collectionVariables.set(\"resultID\", jsonData.resource.id);    ",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"timeTaken\": \"00:10:00\",\r\n  \"testId\": {{testID}},\r\n  \"answers\": [\r\n    {\r\n      \"studentAnswer\": 0,\r\n      \"operation\": \"-\",\r\n      \"operand1\": 5,\r\n      \"operand2\": 5\r\n    },\r\n    {\r\n\t  \"studentAnswer\": -1,\r\n      \"operation\": \"-\",\r\n      \"operand1\": 5,\r\n      \"operand2\": 6\r\n    },\r\n    {\r\n      \"studentAnswer\": 2,\r\n      \"operation\": \"-\",\r\n      \"operand1\": 5,\r\n      \"operand2\": 2\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8000/api/v1/results",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"v1",
+						"results"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get results by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "567b0728-8891-422e-9462-9d65c0eaea2d",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"var jsonData = JSON.parse(responseBody)",
+							"",
+							"pm.test(\"Correct number of answers returned\", function (){",
+							"    pm.expect((jsonData.result.answers).length === 3);",
+							"});",
+							"",
+							"pm.test(\"Correct answers returned\", function () {",
+							"    var answer1 = {",
+							"        \"studentAnswer\": 0,",
+							"        \"correctlyAnswered\": true,",
+							"        \"operation\": \"-\",",
+							"        \"operand1\": 5,",
+							"        \"operand2\": 5",
+							"    };",
+							"    var answer2 = {",
+							"        \"studentAnswer\": -1,",
+							"        \"correctlyAnswered\": true,",
+							"        \"operation\": \"-\",",
+							"        \"operand1\": 5,",
+							"        \"operand2\": 6",
+							"    }",
+							"    var answer3 = {",
+							"        \"studentAnswer\": 2,",
+							"        \"correctlyAnswered\": false,",
+							"        \"operation\": \"-\",",
+							"        \"operand1\": 5,",
+							"        \"operand2\": 2",
+							"    }",
+							"    pm.expect(responseBody).to.have.string(JSON.stringify(answer1));",
+							"    pm.expect(responseBody).to.have.string(JSON.stringify(answer2));",
+							"    pm.expect(responseBody).to.have.string(JSON.stringify(answer3));",
+							"})"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{resultURI}}",
+					"host": [
+						"{{resultURI}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "33edd629-3f0f-4fea-a44e-c1425f41a914",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "b480e108-86ee-45e2-8347-3cb9be49699f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "adb1594d-f799-4075-b2ff-478552ebe2f1",
+			"key": "teacherURI",
+			"value": "http://localhost:8000/api/v1/teachers/4",
+			"type": "string"
+		},
+		{
+			"id": "46882141-16f7-4c4c-9845-160643814c69",
+			"key": "studentURI",
+			"value": "http://localhost:8000/students/4",
+			"type": "string"
+		},
+		{
+			"id": "1c74fdb5-fd44-4069-b5fc-cf0a2bd5b0a1",
+			"key": "teacherID",
+			"value": 4,
+			"type": "number"
+		},
+		{
+			"id": "8c8bcf94-c418-4865-b2b3-39092d6de37e",
+			"key": "studentID",
+			"value": 4,
+			"type": "number"
+		},
+		{
+			"id": "e9615443-affb-474e-ad55-c4bb31b43dfa",
+			"key": "testURI",
+			"value": "http://localhost:8000/api/v1/tests/4",
+			"type": "string"
+		},
+		{
+			"id": "a3485ad7-bd61-4196-be82-63cefa1050c3",
+			"key": "testID",
+			"value": 4,
+			"type": "number"
+		},
+		{
+			"id": "dca37b77-6a05-4c4c-aa36-6d84458563ba",
+			"key": "resultURI",
+			"value": "http://localhost:8000/api/v1/results/6",
+			"type": "string"
+		},
+		{
+			"id": "ad613b54-d309-4759-8b12-0fdecad92965",
+			"key": "resultID",
+			"value": 6,
+			"type": "number"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
