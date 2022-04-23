@@ -18,6 +18,9 @@ const data = require('../database');
 const HttpStatus = require('http-status-codes');
 const Sequelize = require('sequelize');
 
+// Performance stuff.
+const { performance } = require('perf_hooks');
+
 // basic getter to get record by primary key
 /**
  * @api (get) /results/:id
@@ -260,6 +263,8 @@ router.get('/test/:testId/summary', async (req, res) => {
     var result = {};
 
     try {
+        console.log('==================== testSummary // start ====================');
+        const fnStart = performance.now();
         var resultData = await data.Result.findAll({
             where: {
                 testId: req.params.testId
@@ -308,6 +313,9 @@ router.get('/test/:testId/summary', async (req, res) => {
         result['response'] = "Query Successful";
         res.status(result.responseCode);
         res.json(result);
+        const fnEnd = performance.now();
+        console.log('====================  testSummary // end  ====================');
+        console.log(fnEnd - fnStart);
         return;
     } catch (err) {
         var message;
@@ -429,6 +437,8 @@ router.get('/student/:studentId/summary', async (req, res) => {
     var result = {};
 
     try {
+        console.log('==================== studentSummary // start ====================');
+        const fnStart = performance.now();
         var resultData = await data.Result.findAll({
             where: {
                 testId: {
@@ -483,6 +493,9 @@ router.get('/student/:studentId/summary', async (req, res) => {
         result['response'] = "Query Successful";
         res.status(result.responseCode);
         res.json(result);
+        const fnEnd = performance.now();
+        console.log('====================  studentSummary // end  ====================');
+        console.log(fnEnd - fnStart);
         return;
     } catch (err) {
         var message;
@@ -604,6 +617,8 @@ router.get('/teacher/:teacherId/summary', async (req, res) => {
     var result = {};
 
     try {
+        console.log('==================== teacherSummary // start ====================');
+        const fnStart = performance.now();
         var resultData = await data.Result.findAll({
             where: {
                 testId: {
@@ -658,6 +673,9 @@ router.get('/teacher/:teacherId/summary', async (req, res) => {
         result['response'] = "Query Successful";
         res.status(result.responseCode);
         res.json(result);
+        const fnEnd = performance.now();
+        console.log('====================  teacherSummary // end  ====================');
+        console.log(fnEnd - fnStart);
         return;
     } catch (err) {
         var message;
