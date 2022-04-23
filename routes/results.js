@@ -1,5 +1,3 @@
-const Sequelize = require("sequelize");
-
 /*
     Copyright 2019 SER401 Project 14 Team - All Rights Reserved
 
