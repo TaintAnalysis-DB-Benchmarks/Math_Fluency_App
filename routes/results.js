@@ -296,8 +296,8 @@ router.get('/test/:testId/summary', async (req, res) => {
         },
         attributes: ['resultId']
       },
-      group: ["Result.id", "answers.resultId"],
-      attributes: ["result.id", [Sequelize.fn("COUNT", "distinct result.id, answers.resultId"), "aggregateCount"]],
+      group: ["Result.id", "Answers.resultId"],
+      attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
       raw : true
     });
     const result_answer_counts_bcoi = await data.Result.findAll({
@@ -312,16 +312,17 @@ router.get('/test/:testId/summary', async (req, res) => {
         },
         attributes: ['resultId']
       },
-      group: ["Result.id", "answers.resultId"],
-      attributes: ["Result.id", [Sequelize.fn("COUNT", "distinct result.id, answers.resultId"), "aggregateCount"]],
+      group: ["Result.id", "Answers.resultId"],
+      attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
       raw : true
     });
 
     for (i = 0; i < resultData.length; i++) {
-      const result_answer_counts_dh2q_tmp = result_answer_counts_dh2q.find(x => x.id === resultData[i].dataValues.id & x.resultId === resultData[i].dataValues.id);
-      var correctCount = result_answer_counts_dh2q_tmp === undefined ? 0 : result_answer_counts_dh2q_tmp.dataValues.aggregateCount;
-      const result_answer_counts_bcoi_tmp = result_answer_counts_bcoi.find(x => x.id === resultData[i].dataValues.id & x.resultId === resultData[i].dataValues.id);
-      var totalCount = result_answer_counts_bcoi_tmp === undefined ? 0 : result_answer_counts_bcoi_tmp.dataValues.aggregateCount;
+      const result_answer_counts_dh2q_tmp = result_answer_counts_dh2q.find(x => x.id === resultData[i].dataValues.id & x['answers.resultId'] === resultData[i].dataValues.id);
+      var correctCount = result_answer_counts_dh2q_tmp === undefined ? 0 : result_answer_counts_dh2q_tmp.aggregateCount;
+      const result_answer_counts_bcoi_tmp = result_answer_counts_bcoi.find(x => x.id === resultData[i].dataValues.id & x['answers.resultId'] === resultData[i].dataValues.id);
+      var totalCount = result_answer_counts_bcoi_tmp === undefined ? 0 : result_answer_counts_bcoi_tmp.aggregateCount;
+
       resultData[i].dataValues.totalQuestions = totalCount;
       resultData[i].dataValues.correctlyAnswered = correctCount;
     }
@@ -480,40 +481,44 @@ router.get('/student/:studentId/summary', async (req, res) => {
       }
     });
     const result_answer_counts_1jr1 = await data.Result.findAll({
-      where: {
-        id: resultData.map(data => data.dataValues.id)
-      },
-      include: {
-        model: data.Answer,
-        required: true,
         where: {
-          resultId: resultData.map(data => data.dataValues.id),
-          correctlyAnswered: true
-        }
-      },
-      group: ["Result.id", "Answer.resultId"],
-      attributes: ["id", "resultId", [Sequelize.fn("COUNT", "distinct Result.id, Answer.resultId"), "aggregateCount"]]
+            id: resultData.map(data => data.dataValues.id)
+          },
+          include: {
+            model: data.Answer,
+            required: true,
+            where: {
+              resultId: resultData.map(data => data.dataValues.id),
+              correctlyAnswered: true
+            },
+            attributes: ['resultId']
+          },
+          group: ["Result.id", "Answers.resultId"],
+          attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
+          raw : true
     });
     const result_answer_counts_2bqp = await data.Result.findAll({
-      where: {
-        id: resultData.map(data => data.dataValues.id)
-      },
-      include: {
-        model: data.Answer,
-        required: true,
         where: {
-          resultId: resultData.map(data => data.dataValues.id)
-        }
-      },
-      group: ["Result.id", "Answer.resultId"],
-      attributes: ["id", "resultId", [Sequelize.fn("COUNT", "distinct Result.id, Answer.resultId"), "aggregateCount"]]
+            id: resultData.map(data => data.dataValues.id)
+          },
+          include: {
+            model: data.Answer,
+            required: true,
+            where: {
+              resultId: resultData.map(data => data.dataValues.id)
+            },
+            attributes: ['resultId']
+          },
+          group: ["Result.id", "Answers.resultId"],
+          attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
+          raw : true
     });
 
     for (i = 0; i < resultData.length; i++) {
-      const result_answer_counts_1jr1_tmp = result_answer_counts_1jr1.find(x => x.id === resultData[i].dataValues.id & x.resultId === resultData[i].dataValues.id);
-      var correctCount = result_answer_counts_1jr1_tmp === undefined ? 0 : result_answer_counts_1jr1_tmp.dataValues.aggregateCount;
-      const result_answer_counts_2bqp_tmp = result_answer_counts_2bqp.find(x => x.id === resultData[i].dataValues.id & x.resultId === resultData[i].dataValues.id);
-      var totalCount = result_answer_counts_2bqp_tmp === undefined ? 0 : result_answer_counts_2bqp_tmp.dataValues.aggregateCount;
+      const result_answer_counts_1jr1_tmp = result_answer_counts_1jr1.find(x => x.id === resultData[i].dataValues.id & x['answers.resultId'] === resultData[i].dataValues.id);
+      var correctCount = result_answer_counts_1jr1_tmp === undefined ? 0 : result_answer_counts_1jr1_tmp.aggregateCount;
+      const result_answer_counts_2bqp_tmp = result_answer_counts_2bqp.find(x => x.id === resultData[i].dataValues.id & x['answers.resultId'] === resultData[i].dataValues.id);
+      var totalCount = result_answer_counts_2bqp_tmp === undefined ? 0 : result_answer_counts_2bqp_tmp.aggregateCount;
       resultData[i].dataValues.totalQuestions = totalCount;
       resultData[i].dataValues.correctlyAnswered = correctCount;
     }
@@ -672,40 +677,44 @@ router.get('/teacher/:teacherId/summary', async (req, res) => {
       }
     });
     const result_answer_counts_p8ks = await data.Result.findAll({
-      where: {
-        id: resultData.map(data => data.dataValues.id)
-      },
-      include: {
-        model: data.Answer,
-        required: true,
         where: {
-          resultId: resultData.map(data => data.dataValues.id),
-          correctlyAnswered: true
-        }
-      },
-      group: ["Result.id", "Answer.resultId"],
-      attributes: ["id", "resultId", [Sequelize.fn("COUNT", "distinct Result.id, Answer.resultId"), "aggregateCount"]]
+            id: resultData.map(data => data.dataValues.id)
+          },
+          include: {
+            model: data.Answer,
+            required: true,
+            where: {
+              resultId: resultData.map(data => data.dataValues.id),
+              correctlyAnswered: true
+            },
+            attributes: ['resultId']
+          },
+          group: ["Result.id", "Answers.resultId"],
+          attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
+          raw : true
     });
     const result_answer_counts_kech = await data.Result.findAll({
-      where: {
-        id: resultData.map(data => data.dataValues.id)
-      },
-      include: {
-        model: data.Answer,
-        required: true,
         where: {
-          resultId: resultData.map(data => data.dataValues.id)
-        }
-      },
-      group: ["Result.id", "Answer.resultId"],
-      attributes: ["id", "resultId", [Sequelize.fn("COUNT", "distinct Result.id, Answer.resultId"), "aggregateCount"]]
+            id: resultData.map(data => data.dataValues.id)
+          },
+          include: {
+            model: data.Answer,
+            required: true,
+            where: {
+              resultId: resultData.map(data => data.dataValues.id)
+            },
+            attributes: ['resultId']
+          },
+          group: ["Result.id", "Answers.resultId"],
+          attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
+          raw : true
     });
 
     for (i = 0; i < resultData.length; i++) {
-      const result_answer_counts_p8ks_tmp = result_answer_counts_p8ks.find(x => x.id === resultData[i].dataValues.id & x.resultId === resultData[i].dataValues.id);
-      var correctCount = result_answer_counts_p8ks_tmp === undefined ? 0 : result_answer_counts_p8ks_tmp.dataValues.aggregateCount;
-      const result_answer_counts_kech_tmp = result_answer_counts_kech.find(x => x.id === resultData[i].dataValues.id & x.resultId === resultData[i].dataValues.id);
-      var totalCount = result_answer_counts_kech_tmp === undefined ? 0 : result_answer_counts_kech_tmp.dataValues.aggregateCount;
+      const result_answer_counts_p8ks_tmp = result_answer_counts_p8ks.find(x => x.id === resultData[i].dataValues.id & x['answers.resultId'] === resultData[i].dataValues.id);
+      var correctCount = result_answer_counts_p8ks_tmp === undefined ? 0 : result_answer_counts_p8ks_tmp.aggregateCount;
+      const result_answer_counts_kech_tmp = result_answer_counts_kech.find(x => x.id === resultData[i].dataValues.id & x['answers.resultId'] === resultData[i].dataValues.id);
+      var totalCount = result_answer_counts_kech_tmp === undefined ? 0 : result_answer_counts_kech_tmp.aggregateCount;
       resultData[i].dataValues.totalQuestions = totalCount;
       resultData[i].dataValues.correctlyAnswered = correctCount;
     }
