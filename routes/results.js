@@ -293,10 +293,12 @@ router.get('/test/:testId/summary', async (req, res) => {
         where: {
           resultId: resultData.map(data => data.dataValues.id),
           correctlyAnswered: true
-        }
+        },
+        attributes: ['resultId']
       },
-      group: ["Result.id", "Answer.resultId"],
-      attributes: ["id", "resultId", [Sequelize.fn("COUNT", "distinct Result.id, Answer.resultId"), "aggregateCount"]]
+      group: ["Result.id", "answers.resultId"],
+      attributes: ["result.id", [Sequelize.fn("COUNT", "distinct result.id, answers.resultId"), "aggregateCount"]],
+      raw : true
     });
     const result_answer_counts_bcoi = await data.Result.findAll({
       where: {
@@ -307,10 +309,12 @@ router.get('/test/:testId/summary', async (req, res) => {
         required: true,
         where: {
           resultId: resultData.map(data => data.dataValues.id)
-        }
+        },
+        attributes: ['resultId']
       },
-      group: ["Result.id", "Answer.resultId"],
-      attributes: ["id", "resultId", [Sequelize.fn("COUNT", "distinct Result.id, Answer.resultId"), "aggregateCount"]]
+      group: ["Result.id", "answers.resultId"],
+      attributes: ["Result.id", [Sequelize.fn("COUNT", "distinct result.id, answers.resultId"), "aggregateCount"]],
+      raw : true
     });
 
     for (i = 0; i < resultData.length; i++) {
