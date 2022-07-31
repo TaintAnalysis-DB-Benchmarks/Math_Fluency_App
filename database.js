@@ -87,12 +87,12 @@ Test.belongsTo(Student);
 
 const APP_ENVIRONMENT = process.env.APP_ENVIRONMENT || "live";
 if (APP_ENVIRONMENT === "dev") {
-    // sequelize.sync({
-    //     force: true
-    // })
-    // .then(() => {
-    //     console.log(`Database sync successful - force: true`)
-    // });
+    sequelize.sync({
+        force: false
+    })
+    .then(() => {
+        console.log(`Database sync successful - force: true`)
+    });
 } else {
     sequelize.sync({
         force: false

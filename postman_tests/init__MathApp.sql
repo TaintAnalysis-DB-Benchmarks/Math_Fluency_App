@@ -1,4 +1,4 @@
-USE mathapp;
+USE mathapp10;
 INSERT INTO teachers VALUES(1, "John", "Doe");
 INSERT INTO teachers VALUES(2, "James", "Cruz");
 INSERT INTO teachers VALUES(3, "Jessica", "White");
