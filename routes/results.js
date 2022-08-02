@@ -296,8 +296,8 @@ router.get('/test/:testId/summary', async (req, res) => {
         },
         attributes: ['resultId']
       },
-      group: ["Result.id", "Answers.resultId"],
-      attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
+      group: ["result.id", "answers.resultId"],
+      attributes: ["id", [Sequelize.fn("COUNT", "distinct result.id, answers.resultId"), "aggregateCount"]],
       raw : true
     });
     const result_answer_counts_bcoi = await data.Result.findAll({
@@ -312,8 +312,8 @@ router.get('/test/:testId/summary', async (req, res) => {
         },
         attributes: ['resultId']
       },
-      group: ["Result.id", "Answers.resultId"],
-      attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
+      group: ["result.id", "answers.resultId"],
+      attributes: ["id", [Sequelize.fn("COUNT", "distinct result.id, rnswers.resultId"), "aggregateCount"]],
       raw : true
     });
 
@@ -493,8 +493,8 @@ router.get('/student/:studentId/summary', async (req, res) => {
             },
             attributes: ['resultId']
           },
-          group: ["Result.id", "Answers.resultId"],
-          attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
+          group: ["result.id", "answers.resultId"],
+          attributes: ["id", [Sequelize.fn("COUNT", "distinct result.id, answers.resultId"), "aggregateCount"]],
           raw : true
     });
     const result_answer_counts_2bqp = await data.Result.findAll({
@@ -509,8 +509,8 @@ router.get('/student/:studentId/summary', async (req, res) => {
             },
             attributes: ['resultId']
           },
-          group: ["Result.id", "Answers.resultId"],
-          attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
+          group: ["result.id", "answers.resultId"],
+          attributes: ["id", [Sequelize.fn("COUNT", "distinct result.id, answers.resultId"), "aggregateCount"]],
           raw : true
     });
 
@@ -689,8 +689,8 @@ router.get('/teacher/:teacherId/summary', async (req, res) => {
             },
             attributes: ['resultId']
           },
-          group: ["Result.id", "Answers.resultId"],
-          attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
+          group: ["result.id", "answers.resultId"],
+          attributes: ["id", [Sequelize.fn("COUNT", "distinct result.id, answers.resultId"), "aggregateCount"]],
           raw : true
     });
     const result_answer_counts_kech = await data.Result.findAll({
@@ -705,8 +705,8 @@ router.get('/teacher/:teacherId/summary', async (req, res) => {
             },
             attributes: ['resultId']
           },
-          group: ["Result.id", "Answers.resultId"],
-          attributes: ["id", [Sequelize.fn("COUNT", "distinct Result.id, Answers.resultId"), "aggregateCount"]],
+          group: ["result.id", "answers.resultId"],
+          attributes: ["id", [Sequelize.fn("COUNT", "distinct result.id, answers.resultId"), "aggregateCount"]],
           raw : true
     });
 
